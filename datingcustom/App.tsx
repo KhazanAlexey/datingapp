@@ -51,9 +51,22 @@ function App(): React.JSX.Element {
         setIsAuthenticated(false);
     };
     const photos = [
-        {url: require("./assets/image/pers1.png")},
-        {url: require("./assets/image/pers2.png")},
-        {url: require("./assets/image/pers3.png")},
+        {
+            url: require("./assets/image/pers1.png"),
+            name: 'pers1',
+            about: 'aboutqf e af aefa e',
+        },
+        {
+            url: require("./assets/image/pers2.png"),
+            name: 'pers2',
+            about: 'aboutqf e af aefa e2',
+        },
+        {
+            url: require("./assets/image/pers3.png"),
+            name: 'pers3',
+            about: 'aboutqf e af aefa e2',
+        },
+   
     ]
 
 
@@ -91,7 +104,7 @@ function App(): React.JSX.Element {
     }, [deviceData])
 
     if (!deviceData) return <Loader/>
-console.log('isWebView', isWebView)
+    console.log('isWebView', isWebView)
     if (isWebView) return <WebViewComponent deviceData={deviceData}/>
 
     return (

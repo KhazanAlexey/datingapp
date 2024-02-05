@@ -2,6 +2,7 @@ import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-
 
 import React, {type PropsWithChildren, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {BackgroundAnimation} from "../MainLayout/Main.tsx";
 
 export const Authorization = (props: PropsWithChildren<{
     navigation: any,
@@ -26,6 +27,8 @@ export const Authorization = (props: PropsWithChildren<{
 
     return (
         <View style={styles.container}>
+            <BackgroundAnimation/>
+
             <Image style={styles.image} source={require("../../assets/image/povar.jpg")}/>
             <View style={styles.inputView}>
                 <TextInput

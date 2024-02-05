@@ -1,6 +1,7 @@
-import {Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import React, {type PropsWithChildren, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {BackgroundAnimation} from "../MainLayout/Main.tsx";
 
 
 export const Registration = (props: PropsWithChildren<{
@@ -13,7 +14,7 @@ export const Registration = (props: PropsWithChildren<{
 
     const onRegisterHandler = async () => {
         setError('')
-        if(!email || !password){
+        if (!email || !password) {
             setError('Enter email and password')
             return
         }
@@ -26,6 +27,7 @@ export const Registration = (props: PropsWithChildren<{
 
     return (
         <View style={styles.container}>
+            <BackgroundAnimation/>
             <Image style={styles.image} source={require("../../assets/image/povar.jpg")}/>
             <View style={styles.inputView}>
                 <TextInput
