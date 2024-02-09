@@ -24,7 +24,6 @@ export const Main = (props: PropsWithChildren<{
 }>): React.JSX.Element => {
     const route = useRoute();
     const isDarkMode = useColorScheme() === 'dark';
-    const [count, setCount] = useState(0);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -61,23 +60,24 @@ export const Main = (props: PropsWithChildren<{
                     <Text style={styles.textTop}>Like it or not</Text>
                 </View>
 
-                {/*<BackgroundAnimation/>*/}
 
                 {props.photos.length > 0 && currentPhotoIndex < props.photos.length ? (
                     <View style={[styles.center, styles.mainPicture]}>
                         <Image source={props.photos[currentPhotoIndex].url}
                                style={{width: 250, height: 400, borderRadius: 20}}/>
-                        <View style={styles.imageDescription}>
+                        <View style={[styles.imageDescription,styles.transforms]}>
+                            <View style={{width: '100%', borderRadius: 10, overflow: 'hidden',transform: [{scale: 0.9}]}} >
+                                <Text style={styles.imageDescriptionHeader}>{props.photos[currentPhotoIndex].name}</Text>
+                                <Text style={{display: 'flex'}}>{props.photos[currentPhotoIndex].about}</Text>
+                            </View>
 
-                            <Text style={styles.imageDescriptionHeader}>{props.photos[currentPhotoIndex].name}</Text>
-                            <Text style={{display: 'flex'}}>{props.photos[currentPhotoIndex].about}</Text>
                         </View>
 
                         <View style={styles.footerControlsWrapper}>
                             <TouchableHighlight style={styles.footerButton} onPress={handleLike}>
                                 <Svg height="20" width="20"
                                      viewBox="0 0 512 512">
-                                    <Path fill="#ff0000"
+                                    <Path fill="#FD0E42"
                                           d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/>
                                 </Svg>
                             </TouchableHighlight>
@@ -116,15 +116,17 @@ export const Main = (props: PropsWithChildren<{
 
 const styles = StyleSheet.create({
     emptyPageWrapper: {
-        // remove width and height to override fixed static size
-        // position: 'absolute',
-        // top: 0,
         height: 1000,
     },
     emptyPageMessage: {
         fontSize: 40,
         fontWeight: 'bold',
 
+    },
+    transforms:{
+        transform:[
+            {translateY:-50},
+        ]
     },
     imageDescriptionHeader: {
         fontSize: 20,
@@ -133,8 +135,10 @@ const styles = StyleSheet.create({
     },
 
     imageDescription: {
+        zIndex: 1,
+        backgroundColor: 'white',
         padding: 20,
-        borderRadius: 5,
+        borderRadius: 10,
         width: 250,
         shadowColor: "#000000",
         shadowOffset: {
@@ -157,14 +161,10 @@ const styles = StyleSheet.create({
         height: 300,
         borderBottomLeftRadius: 50,
         borderBottomRightRadius: 50,
-        backgroundColor: 'red',
+        backgroundColor: '#C30F31',
     },
     wrapper: {
-        // width: '100%',
-        // height: '100%',
-
         position: 'relative',
-        // backgroundColor: 'red',
     },
     mainBackground: {
         position: 'absolute',
@@ -183,13 +183,12 @@ const styles = StyleSheet.create({
         marginTop: 70,
 
     },
-    footerControlsWrapper: {flexDirection: 'row', gap: 70, marginTop: 10},
+    footerControlsWrapper: {flexDirection: 'row', gap: 70, },
     footerButton: {
         padding: 20,
         borderRadius: 50,
         borderColor: 'black',
-        borderWidth: 1
-
+        borderWidth: 1,
     }
 });
 export const INPUT_RANGE_START = 0;

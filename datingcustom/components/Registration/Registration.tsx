@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import React, {type PropsWithChildren, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {BackgroundAnimation} from "../MainLayout/Main.tsx";
@@ -28,7 +28,9 @@ export const Registration = (props: PropsWithChildren<{
     return (
         <View style={styles.container}>
             <BackgroundAnimation/>
-            <Image style={styles.image} source={require("../../assets/image/povar.jpg")}/>
+            <View style={{paddingTop: 150, paddingBottom: 5, justifyContent: 'flex-start', width: '70%'}}>
+                <Text style={{textAlign: 'left', fontSize: 24, color: '#211E1E'}}>Regestration</Text>
+            </View>
             <View style={styles.inputView}>
                 <TextInput
                     style={styles.TextInput}
@@ -46,9 +48,6 @@ export const Registration = (props: PropsWithChildren<{
                     onChangeText={(password) => setPassword(password)}
                 />
             </View>
-            {/*<TouchableOpacity>*/}
-            {/*    <Text style={styles.forgot_button}>Forgot Password?</Text>*/}
-            {/*</TouchableOpacity>*/}
             <TouchableOpacity onPress={onRegisterHandler} style={styles.registerBtn}>
                 <Text style={styles.loginText}>Register</Text>
             </TouchableOpacity>
@@ -63,7 +62,6 @@ export const Registration = (props: PropsWithChildren<{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
@@ -71,8 +69,10 @@ const styles = StyleSheet.create({
         marginBottom: 40,
     },
     inputView: {
-        backgroundColor: "#10c91a",
-        borderRadius: 30,
+        backgroundColor: "white",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#BAC3D5",
         width: "70%",
         height: 45,
         marginBottom: 20,
@@ -90,16 +90,17 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     registerBtn: {
-        width: "80%",
-        borderRadius: 25,
+        width: "70%",
+        borderRadius: 10,
         height: 50,
         alignItems: "center",
         justifyContent: "center",
         marginTop: 40,
-        backgroundColor: "#FF1493",
+
+        backgroundColor: "#C30F31",
     },
     loginText: {
-        color: "black",
+        color: "white",
         fontWeight: "bold",
     }
 });

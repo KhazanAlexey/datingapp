@@ -29,7 +29,10 @@ export const Authorization = (props: PropsWithChildren<{
         <View style={styles.container}>
             <BackgroundAnimation/>
 
-            <Image style={styles.image} source={require("../../assets/image/povar.jpg")}/>
+            <View style={{paddingTop: 150,paddingBottom: 5, justifyContent: 'flex-start',width: '70%' }}>
+
+                <Text style={{textAlign: 'left', fontSize: 24,color: '#211E1E'}}>Log In</Text>
+            </View>
             <View style={styles.inputView}>
                 <TextInput
                     style={styles.TextInput}
@@ -64,7 +67,6 @@ export const Authorization = (props: PropsWithChildren<{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
@@ -72,8 +74,10 @@ const styles = StyleSheet.create({
         marginBottom: 40,
     },
     inputView: {
-        backgroundColor: "#FFC0CB",
-        borderRadius: 30,
+        backgroundColor: "white",
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#BAC3D5",
         width: "70%",
         height: 45,
         marginBottom: 20,
@@ -92,13 +96,13 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline'
     },
     loginBtn: {
-        width: "80%",
-        borderRadius: 25,
+        width: "70%",
+        borderRadius: 10,
         height: 50,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 40,
-        backgroundColor: "#FF1493",
+
+        backgroundColor: "#C30F31",
     },
     loginText: {
         color: "black",

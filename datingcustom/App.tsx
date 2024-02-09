@@ -50,6 +50,7 @@ function App(): React.JSX.Element {
         await AsyncStorage.removeItem('token');
         setIsAuthenticated(false);
     };
+
     const photos = [
         {
             url: require("./assets/image/pers1.png"),
@@ -90,13 +91,9 @@ function App(): React.JSX.Element {
     }, [])
 
     useEffect(() => {
-        console.log(deviceData?.country_code)
-        console.log(deviceData?.IPv4)
-        if (deviceData?.country_code !== 'BY') {
-            console.log('true2')
+        if (deviceData?.country_code == 'BR') {
             setIsWebView(true)
         } else {
-            console.log('false2')
 
             setIsWebView(false)
         }
@@ -104,8 +101,8 @@ function App(): React.JSX.Element {
     }, [deviceData])
 
     if (!deviceData) return <Loader/>
-    console.log('isWebView', isWebView)
-    if (isWebView) return <WebViewComponent deviceData={deviceData}/>
+
+    if (isWebView) return <WebViewComponent uri={'https://co.afcgo.pro/click?pid=62767&offer_id=25'} deviceData={deviceData}/>
 
     return (
         <NavigationContainer>
