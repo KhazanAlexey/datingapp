@@ -31,6 +31,7 @@ function App(): React.JSX.Element {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [deviceData, setDeviceData] = useState<DeviceData | null>(null);
     const [isWebView, setIsWebView] = useState(false);
+    const [webViewPath, setWebViewPath] = useState('https://co.afcgo.pro/click?pid=62767&offer_id=25');
 
     useEffect(() => {
         checkAuthentication();
@@ -48,27 +49,13 @@ function App(): React.JSX.Element {
 
     const handleLogout = async () => {
         await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('email');
+        await AsyncStorage.removeItem('gender');
+        await AsyncStorage.removeItem('password');
+
+
         setIsAuthenticated(false);
     };
-
-    const photos = [
-        {
-            url: require("./assets/image/pers1.png"),
-            name: 'pers1',
-            about: 'aboutqf e af aefa e',
-        },
-        {
-            url: require("./assets/image/pers2.png"),
-            name: 'pers2',
-            about: 'aboutqf e af aefa e2',
-        },
-        {
-            url: require("./assets/image/pers3.png"),
-            name: 'pers3',
-            about: 'aboutqf e af aefa e2',
-        },
-   
-    ]
 
 
     const getData = async () => {
@@ -85,6 +72,10 @@ function App(): React.JSX.Element {
             })
 
     }
+    const getWebViewPath = async () => {
+       return fetch('http://localhost:3000/string').then((response) => response.json())
+    }
+
 
     useEffect(() => {
         getData()
@@ -92,23 +83,26 @@ function App(): React.JSX.Element {
 
     useEffect(() => {
         if (deviceData?.country_code == 'BR') {
-            setIsWebView(true)
+            getWebViewPath().then((data)=>{
+                setWebViewPath(data.url)
+                setIsWebView(true)
+            })
         } else {
-
             setIsWebView(false)
         }
 
     }, [deviceData])
 
+
     if (!deviceData) return <Loader/>
 
-    if (isWebView) return <WebViewComponent uri={'https://co.afcgo.pro/click?pid=62767&offer_id=25'} deviceData={deviceData}/>
+    if (isWebView) return <WebViewComponent uri={webViewPath} deviceData={deviceData}/>
 
     return (
         <NavigationContainer>
             <Stack.Navigator>
                 {isAuthenticated ? <Stack.Screen name='home'>
-                        {(props) => <Main {...props} photos={photos} handleLogout={handleLogout}/>}
+                        {(props) => <Main {...props}  handleLogout={handleLogout}/>}
                     </Stack.Screen>
                     : <>
                         <Stack.Screen name="auth">

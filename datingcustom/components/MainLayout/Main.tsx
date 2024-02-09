@@ -16,40 +16,86 @@ import {
 import {Colors,} from 'react-native/Libraries/NewAppScreen';
 import {useRoute} from "@react-navigation/native";
 import Svg, {Path} from "react-native-svg";
+import {Loader} from "../Loader/Loader.tsx";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const Main = (props: PropsWithChildren<{
-    photos: any[],
     navigation: any,
     handleLogout: () => void
 }>): React.JSX.Element => {
+
     const route = useRoute();
     const isDarkMode = useColorScheme() === 'dark';
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+    const [gender, setGender] = useState('men');
+
+    const [currentPhoto, setCurrentPhoto] = useState('');
+    const [allData, setAllData] = useState(null);
+
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
+    const getAllData = async () => {
+        console.log('getAllData')
+        fetch(`http://localhost:3000/photos/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                setAllData(data)
+            }).catch(e=>{console.log(e)})
+    }
+
+    const getPhotoByName = async (name: string) => {
+        console.log('gender,gender',gender)
+        fetch(`http://localhost:3000/photos/${gender}/${name}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.url;
+            })
+            .then(data => {
+                setCurrentPhoto(data)
+            }).catch(e=>{console.log(e)})
+
+    }
+
+    useEffect(() => {
+       AsyncStorage.getItem('gender').then(data => {
+          data && setGender(data)
+       });
+
+        getAllData()
+
+    }, [])
+
     const onLogout = () => {
         props.handleLogout()
     }
 
+    useEffect(() => {
+        const currentPhotoName = allData && allData[gender][currentPhotoIndex]
+        currentPhotoName && getPhotoByName(currentPhotoName)
+    }, [currentPhotoIndex,allData])
+
     const handleLike = () => {
-        // Logic to handle liking the current photo
-        // Here you can implement functionality to store likes, update state, etc.
-        // For now, let's just move to the next photo
         showNextPhoto();
     };
 
     const handleDislike = () => {
-        // Logic to handle disliking the current photo
-        // Here you can implement functionality to store dislikes, update state, etc.
-        // For now, let's just move to the next photo
         showNextPhoto();
     };
 
     const showNextPhoto = () => {
-        // Move to the next photo
         setCurrentPhotoIndex(currentPhotoIndex + 1);
     };
+    if(!allData||!allData[gender]) return <Loader/>
+
     return (
         <SafeAreaView style={[backgroundStyle]}>
             <ScrollView
@@ -61,14 +107,20 @@ export const Main = (props: PropsWithChildren<{
                 </View>
 
 
-                {props.photos.length > 0 && currentPhotoIndex < props.photos.length ? (
+                {allData[gender]?.length > 0 && currentPhotoIndex < allData[gender].length ? (
                     <View style={[styles.center, styles.mainPicture]}>
-                        <Image source={props.photos[currentPhotoIndex].url}
-                               style={{width: 250, height: 400, borderRadius: 20}}/>
-                        <View style={[styles.imageDescription,styles.transforms]}>
-                            <View style={{width: '100%', borderRadius: 10, overflow: 'hidden',transform: [{scale: 0.9}]}} >
-                                <Text style={styles.imageDescriptionHeader}>{props.photos[currentPhotoIndex].name}</Text>
-                                <Text style={{display: 'flex'}}>{props.photos[currentPhotoIndex].about}</Text>
+                        {currentPhoto && <Image source={{uri: currentPhoto}}
+                                                style={{width: 250, height: 400, borderRadius: 20}}/>}
+                        <View style={[styles.imageDescription, styles.transforms]}>
+                            <View style={{
+                                width: '100%',
+                                borderRadius: 10,
+                                overflow: 'hidden',
+                                transform: [{scale: 0.9}]
+                            }}>
+                                <Text
+                                    style={styles.imageDescriptionHeader}>{allData[`${gender}Data`][currentPhotoIndex].name}</Text>
+                                <Text style={{display: 'flex'}}>{allData[`${gender}Data`][currentPhotoIndex].description}</Text>
                             </View>
 
                         </View>
@@ -88,8 +140,6 @@ export const Main = (props: PropsWithChildren<{
                                           d="M119.4 44.1c23.3-3.9 46.8-1.9 68.6 5.3l49.8 77.5-75.4 75.4c-1.5 1.5-2.4 3.6-2.3 5.8s1 4.2 2.6 5.7l112 104c2.9 2.7 7.4 2.9 10.5 .3s3.8-7 1.7-10.4l-60.4-98.1 90.7-75.6c2.6-2.1 3.5-5.7 2.4-8.8L296.8 61.8c28.5-16.7 62.4-23.2 95.7-17.6C461.5 55.6 512 115.2 512 185.1v5.8c0 41.5-17.2 81.2-47.6 109.5L283.7 469.1c-7.5 7-17.4 10.9-27.7 10.9s-20.2-3.9-27.7-10.9L47.6 300.4C17.2 272.1 0 232.4 0 190.9v-5.8c0-69.9 50.5-129.5 119.4-141z"/>
                                 </Svg>
                             </TouchableHighlight>
-                            {/*<Button title="Like" onPress={handleLike}/>*/}
-                            {/*<Button title="Dislike" onPress={handleDislike}/>*/}
                         </View>
                     </View>
                 ) : (
@@ -99,16 +149,14 @@ export const Main = (props: PropsWithChildren<{
                             <Text style={styles.emptyPageMessage}>Wait for matches!!!
                             </Text>
                         </View>
+                        <View style={[styles.center]}>
+                            <Button
+                                onPress={onLogout}
+                                title="logout"
+                            />
+                        </View>
                     </View>
-
                 )}
-                <View style={[styles.center]}>
-                    <Button
-                        onPress={onLogout}
-                        title="logout"
-                    />
-                </View>
-
             </ScrollView>
         </SafeAreaView>
     );
@@ -123,9 +171,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
 
     },
-    transforms:{
-        transform:[
-            {translateY:-50},
+    transforms: {
+        transform: [
+            {translateY: -50},
         ]
     },
     imageDescriptionHeader: {
@@ -183,7 +231,7 @@ const styles = StyleSheet.create({
         marginTop: 70,
 
     },
-    footerControlsWrapper: {flexDirection: 'row', gap: 70, },
+    footerControlsWrapper: {flexDirection: 'row', gap: 70,},
     footerButton: {
         padding: 20,
         borderRadius: 50,
