@@ -37,7 +37,6 @@ export const Registration = (props: PropsWithChildren<{
         await AsyncStorage.setItem('gender', selectedId);
         await AsyncStorage.setItem('password', password);
         props.handleLogin()
-        // props.navigation.navigate('auth')
     }
 
 

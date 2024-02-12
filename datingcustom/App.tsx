@@ -49,9 +49,9 @@ function App(): React.JSX.Element {
 
     const handleLogout = async () => {
         await AsyncStorage.removeItem('token');
-        await AsyncStorage.removeItem('email');
-        await AsyncStorage.removeItem('gender');
-        await AsyncStorage.removeItem('password');
+        // await AsyncStorage.removeItem('email');
+        // await AsyncStorage.removeItem('gender');
+        // await AsyncStorage.removeItem('password');
 
 
         setIsAuthenticated(false);

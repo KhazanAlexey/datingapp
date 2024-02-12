@@ -18,6 +18,14 @@ import {useRoute} from "@react-navigation/native";
 import Svg, {Path} from "react-native-svg";
 import {Loader} from "../Loader/Loader.tsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {fetchData} from "../../utils/fetchData.ts";
+
+interface AllData {
+    men: string[],
+    women: string[],
+    menData: { name: string, description: string }[],
+    womenData: { name: string, description: string }[],
+}
 
 export const Main = (props: PropsWithChildren<{
     navigation: any,
@@ -27,31 +35,24 @@ export const Main = (props: PropsWithChildren<{
     const route = useRoute();
     const isDarkMode = useColorScheme() === 'dark';
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-    const [gender, setGender] = useState('men');
+    const [gender, setGender] = useState<'men' | 'women'>('men');
 
     const [currentPhoto, setCurrentPhoto] = useState('');
-    const [allData, setAllData] = useState(null);
+    const [allData, setAllData] = useState<AllData | null>(null);
 
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
     const getAllData = async () => {
-        console.log('getAllData')
-        fetch(`http://localhost:3000/photos/`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                return response.json();
-            })
-            .then(data => {
-                setAllData(data)
-            }).catch(e=>{console.log(e)})
+        try {
+            const data = await fetchData(`http://localhost:3000/photos/`);
+            setAllData(data);
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const getPhotoByName = async (name: string) => {
-        console.log('gender,gender',gender)
         fetch(`http://localhost:3000/photos/${gender}/${name}`)
             .then(response => {
                 if (!response.ok) {
@@ -61,14 +62,16 @@ export const Main = (props: PropsWithChildren<{
             })
             .then(data => {
                 setCurrentPhoto(data)
-            }).catch(e=>{console.log(e)})
+            }).catch(e => {
+            console.log(e)
+        })
 
     }
 
     useEffect(() => {
-       AsyncStorage.getItem('gender').then(data => {
-          data && setGender(data)
-       });
+        AsyncStorage.getItem('gender').then(data => {
+            data && setGender(data as 'men' | 'women')
+        });
 
         getAllData()
 
@@ -81,7 +84,7 @@ export const Main = (props: PropsWithChildren<{
     useEffect(() => {
         const currentPhotoName = allData && allData[gender][currentPhotoIndex]
         currentPhotoName && getPhotoByName(currentPhotoName)
-    }, [currentPhotoIndex,allData])
+    }, [currentPhotoIndex, allData])
 
     const handleLike = () => {
         showNextPhoto();
@@ -92,9 +95,9 @@ export const Main = (props: PropsWithChildren<{
     };
 
     const showNextPhoto = () => {
-        setCurrentPhotoIndex(currentPhotoIndex + 1);
+        setCurrentPhotoIndex(prevIndex => prevIndex + 1);
     };
-    if(!allData||!allData[gender]) return <Loader/>
+    if (!allData || !allData[gender]) return <Loader/>
 
     return (
         <SafeAreaView style={[backgroundStyle]}>
@@ -120,7 +123,8 @@ export const Main = (props: PropsWithChildren<{
                             }}>
                                 <Text
                                     style={styles.imageDescriptionHeader}>{allData[`${gender}Data`][currentPhotoIndex].name}</Text>
-                                <Text style={{display: 'flex'}}>{allData[`${gender}Data`][currentPhotoIndex].description}</Text>
+                                <Text
+                                    style={{display: 'flex'}}>{allData[`${gender}Data`][currentPhotoIndex].description}</Text>
                             </View>
 
                         </View>
