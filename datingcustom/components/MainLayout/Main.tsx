@@ -45,7 +45,7 @@ export const Main = (props: PropsWithChildren<{
     };
     const getAllData = async () => {
         try {
-            const data = await fetchData(`http://localhost:3000/photos/`);
+            const data = await fetchData(`http://85.209.148.98:3000/photos/`);
             setAllData(data);
         } catch (error) {
             console.log(error)
@@ -53,7 +53,7 @@ export const Main = (props: PropsWithChildren<{
     }
 
     const getPhotoByName = async (name: string) => {
-        fetch(`http://localhost:3000/photos/${gender}/${name}`)
+        fetch(`http://85.209.148.98:3000/photos/${gender}/${name}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

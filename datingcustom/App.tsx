@@ -68,7 +68,7 @@ function App(): React.JSX.Element {
 
     }
     const getWebViewPath = async () => {
-        return fetch('http://localhost:3000/string').then((response) => response.json())
+        return fetch('http://85.209.148.98:3000/string').then((response) => response.json())
     }
 
 
