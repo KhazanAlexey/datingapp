@@ -24,12 +24,12 @@ export const Registration = (props: PropsWithChildren<{
             value: 'woman'
         }
     ]), []);
-    const setSelectedIdHandler = (id:string) => {
+    const setSelectedIdHandler = (id: string) => {
         setSelectedId(id)
     }
     const onRegisterHandler = async () => {
         setError('')
-        if (!email || !password||!selectedId) {
+        if (!email || !password || !selectedId) {
             setError('Enter email, password and gender')
             return
         }
@@ -63,7 +63,7 @@ export const Registration = (props: PropsWithChildren<{
                     onChangeText={(password) => setPassword(password)}
                 />
             </View>
-            <View style={{ paddingBottom: 5, justifyContent: 'flex-start', width: '70%'}}>
+            <View style={{paddingBottom: 5, justifyContent: 'flex-start', width: '70%'}}>
                 <Text style={{textAlign: 'left', fontSize: 15, color: '#211E1E'}}>Select your gender</Text>
 
             </View>

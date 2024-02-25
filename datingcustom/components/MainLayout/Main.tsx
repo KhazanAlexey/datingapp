@@ -22,9 +22,9 @@ import {fetchData} from "../../utils/fetchData.ts";
 
 interface AllData {
     men: string[],
-    women: string[],
+    woman: string[],
     menData: { name: string, description: string }[],
-    womenData: { name: string, description: string }[],
+    womanData: { name: string, description: string }[],
 }
 
 export const Main = (props: PropsWithChildren<{
@@ -35,7 +35,7 @@ export const Main = (props: PropsWithChildren<{
     const route = useRoute();
     const isDarkMode = useColorScheme() === 'dark';
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-    const [gender, setGender] = useState<'men' | 'women'>('men');
+    const [gender, setGender] = useState<'men' | 'woman'>('men');
 
     const [currentPhoto, setCurrentPhoto] = useState('');
     const [allData, setAllData] = useState<AllData | null>(null);
@@ -70,9 +70,18 @@ export const Main = (props: PropsWithChildren<{
 
     useEffect(() => {
         AsyncStorage.getItem('gender').then(data => {
-            data && setGender(data as 'men' | 'women')
-        });
 
+            if (data) {
+                const showGenderForUser = data === 'women' ? 'men' : 'woman'
+                setGender(showGenderForUser)
+            }
+        });
+        AsyncStorage.getItem('currentPhotoIndex').then(data => {
+
+            if (data) {
+                setCurrentPhotoIndex(parseFloat(data))
+            }
+        });
         getAllData()
 
     }, [])
@@ -82,9 +91,14 @@ export const Main = (props: PropsWithChildren<{
     }
 
     useEffect(() => {
-        const currentPhotoName = allData && allData[gender][currentPhotoIndex]
-        currentPhotoName && getPhotoByName(currentPhotoName)
-    }, [currentPhotoIndex, allData])
+        if (allData && gender) {
+
+            const currentPhotoName = allData[gender][currentPhotoIndex]
+
+            currentPhotoName && getPhotoByName(currentPhotoName)
+
+        }
+    }, [currentPhotoIndex, allData, gender])
 
     const handleLike = () => {
         showNextPhoto();
@@ -94,8 +108,13 @@ export const Main = (props: PropsWithChildren<{
         showNextPhoto();
     };
 
-    const showNextPhoto = () => {
+    const showNextPhoto = async () => {
         setCurrentPhotoIndex(prevIndex => prevIndex + 1);
+        try {
+            await AsyncStorage.setItem('currentPhotoIndex', (currentPhotoIndex + 1).toString());
+        } catch (e) {
+
+        }
     };
     if (!allData || !allData[gender]) return <Loader/>
 
@@ -104,7 +123,6 @@ export const Main = (props: PropsWithChildren<{
             <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
                 style={[backgroundStyle, styles.wrapper]}>
-                {/*<View style={styles.inner}>*/}
                 <View style={styles.topBackground}>
                     <Text style={styles.textTop}>Like it or not</Text>
                 </View>

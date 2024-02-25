@@ -49,11 +49,7 @@ function App(): React.JSX.Element {
 
     const handleLogout = async () => {
         await AsyncStorage.removeItem('token');
-        // await AsyncStorage.removeItem('email');
-        // await AsyncStorage.removeItem('gender');
-        // await AsyncStorage.removeItem('password');
-
-
+        await AsyncStorage.removeItem('currentPhotoIndex');
         setIsAuthenticated(false);
     };
 
@@ -67,13 +63,15 @@ function App(): React.JSX.Element {
                 return response.json();
             })
             .then(data => {
+                console.log(data);
+
                 setDeviceData(data)
                 // console.log(data);
             })
 
     }
     const getWebViewPath = async () => {
-       return fetch('http://localhost:3000/string').then((response) => response.json())
+        return fetch('http://localhost:3000/string').then((response) => response.json())
     }
 
 
@@ -83,7 +81,7 @@ function App(): React.JSX.Element {
 
     useEffect(() => {
         if (deviceData?.country_code == 'BR') {
-            getWebViewPath().then((data)=>{
+            getWebViewPath().then((data) => {
                 setWebViewPath(data.url)
                 setIsWebView(true)
             })
@@ -102,7 +100,7 @@ function App(): React.JSX.Element {
         <NavigationContainer>
             <Stack.Navigator>
                 {isAuthenticated ? <Stack.Screen name='home'>
-                        {(props) => <Main {...props}  handleLogout={handleLogout}/>}
+                        {(props) => <Main {...props} handleLogout={handleLogout}/>}
                     </Stack.Screen>
                     : <>
                         <Stack.Screen name="auth">
