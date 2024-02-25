@@ -63,10 +63,7 @@ function App(): React.JSX.Element {
                 return response.json();
             })
             .then(data => {
-                console.log(data);
-
                 setDeviceData(data)
-                // console.log(data);
             })
 
     }

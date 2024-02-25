@@ -72,7 +72,7 @@ export const Main = (props: PropsWithChildren<{
         AsyncStorage.getItem('gender').then(data => {
 
             if (data) {
-                const showGenderForUser = data === 'women' ? 'men' : 'woman'
+                const showGenderForUser = data === 'woman' ? 'men' : 'woman'
                 setGender(showGenderForUser)
             }
         });
