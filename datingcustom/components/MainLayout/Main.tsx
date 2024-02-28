@@ -1,7 +1,6 @@
 import React, {PropsWithChildren, useEffect, useRef, useState} from 'react';
 import {
     Animated,
-    Button,
     Easing,
     Image,
     ImageBackground,
@@ -171,12 +170,12 @@ export const Main = (props: PropsWithChildren<{
                             <Text style={styles.emptyPageMessage}>Wait for matches!!!
                             </Text>
                         </View>
-                        <View style={[styles.center]}>
-                            <Button
-                                onPress={onLogout}
-                                title="logout"
-                            />
-                        </View>
+                        {/*<View style={[styles.center]}>*/}
+                        {/*    <Button*/}
+                        {/*        onPress={onLogout}*/}
+                        {/*        title="logout"*/}
+                        {/*    />*/}
+                        {/*</View>*/}
                     </View>
                 )}
             </ScrollView>
