@@ -1,24 +1,23 @@
-import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 
 import React, {type PropsWithChildren, useState} from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {BackgroundAnimation} from "../MainLayout/Main.tsx";
 
 export const Authorization = (props: PropsWithChildren<{
     navigation: any,
-    handleLogin: () => void
+    handleLogin: ({ username, password }: { username: string, password: string }) => Promise<any>
 }>): React.JSX.Element => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const onLogin = async () => {
         setError('')
-        const emailStore = await AsyncStorage.getItem('email');
-        const passwordStore = await AsyncStorage.getItem('password');
-        if (email == emailStore && password == passwordStore) {
-            props.handleLogin()
+        // const emailStore = await AsyncStorage.getItem('email');
+        // const passwordStore = await AsyncStorage.getItem('password');
+        if (email && password ) {
+            props.handleLogin({ username:email, password }).catch(e=>setError(e))
         } else {
-            setError('Wrong email or password')
+            setError('Empty email or password')
         }
     }
     const onRegister = () => {

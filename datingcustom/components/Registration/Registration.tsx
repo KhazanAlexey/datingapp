@@ -6,7 +6,7 @@ import RadioGroup, {RadioButtonProps} from 'react-native-radio-buttons-group';
 
 export const Registration = (props: PropsWithChildren<{
     navigation: any,
-    handleLogin: () => void
+    handleRegister: ({ username, password }: { username: string, password: string }) => void
 }>): React.JSX.Element => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -33,10 +33,10 @@ export const Registration = (props: PropsWithChildren<{
             setError('Enter email, password and gender')
             return
         }
-        await AsyncStorage.setItem('email', email);
+        // await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('gender', selectedId);
-        await AsyncStorage.setItem('password', password);
-        props.handleLogin()
+        // await AsyncStorage.setItem('password', password);
+        props.handleRegister({ username:email, password })
     }
 
 

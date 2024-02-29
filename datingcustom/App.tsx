@@ -13,6 +13,7 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {WebViewComponent} from "./components/WebView/WebView.tsx";
 import {Loader} from "./components/Loader/Loader.tsx";
+import {BASE_URL} from "./constDating";
 
 export interface DeviceData {
     "IPv4": string,
@@ -39,17 +40,74 @@ function App(): React.JSX.Element {
 
     const checkAuthentication = async () => {
         const token = await AsyncStorage.getItem('token');
-        setIsAuthenticated(token ? true : false);
+        const emailStore = await AsyncStorage.getItem('email') ?? '';
+        const passwordStore = await AsyncStorage.getItem('password') ?? '';
+        handleLogin({username: emailStore, password: passwordStore})
+        // setIsAuthenticated(token ? true : false);
     };
 
-    const handleLogin = async () => {
-        await AsyncStorage.setItem('token', 'your_token_here');
-        setIsAuthenticated(true);
+    // const handleLogin = async () => {
+    //     await AsyncStorage.setItem('token', 'your_token_here');
+    //     setIsAuthenticated(true);
+    // };
+    const handleLogin = async ({username, password}: { username: string, password: string }) => {
+        try {
+            const response = await fetch(`${BASE_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({username, password}),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                // Save token to AsyncStorage
+                await AsyncStorage.setItem('token', data.token);
+                await AsyncStorage.setItem('email', username);
+                await AsyncStorage.setItem('password', password);
+                setIsAuthenticated(true);
+            } else {
+                console.log('Login Failed', data.message);
+                handleLogout()
+                throw data.message;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            console.log('Error', 'An error occurred while logging in');
+            throw error;
+            handleLogout()
+        }
     };
-
+    const handleRegister = async ({username, password}: { username: string, password: string }) => {
+        try {
+            const response = await fetch(`${BASE_URL}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({username, password}),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                // Handle successful registration
+                console.log('Registration successful');
+                handleLogin({username, password})
+            } else {
+                // Handle registration failure
+                console.log('Registration Failed', data.message);
+                throw data.message;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            console.log('Error', 'An error occurred while registering');
+            throw error;
+        }
+    };
     const handleLogout = async () => {
         await AsyncStorage.removeItem('token');
         await AsyncStorage.removeItem('currentPhotoIndex');
+        await AsyncStorage.removeItem('email');
+        await AsyncStorage.removeItem('password');
         setIsAuthenticated(false);
     };
 
@@ -104,7 +162,7 @@ function App(): React.JSX.Element {
                             {(props) => <Authorization {...props} handleLogin={handleLogin}/>}
                         </Stack.Screen>
                         <Stack.Screen name="registration">
-                            {(props) => <Registration {...props} handleLogin={handleLogin}/>}
+                            {(props) => <Registration {...props} handleRegister={handleRegister}/>}
                         </Stack.Screen>
                     </>}
             </Stack.Navigator>
