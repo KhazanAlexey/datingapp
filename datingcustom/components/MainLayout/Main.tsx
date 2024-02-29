@@ -1,6 +1,6 @@
 import React, {PropsWithChildren, useEffect, useRef, useState} from 'react';
 import {
-    Animated,
+    Animated, Button,
     Easing,
     Image,
     ImageBackground,
@@ -18,6 +18,7 @@ import Svg, {Path} from "react-native-svg";
 import {Loader} from "../Loader/Loader.tsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {fetchData} from "../../utils/fetchData.ts";
+import {BASE_URL} from "../../constDating";
 
 interface AllData {
     men: string[],
@@ -44,7 +45,7 @@ export const Main = (props: PropsWithChildren<{
     };
     const getAllData = async () => {
         try {
-            const data = await fetchData(`http://85.209.148.98:3000/photos/`);
+            const data = await fetchData(`${BASE_URL}/photos/`);
             setAllData(data);
         } catch (error) {
             console.log(error)
@@ -52,7 +53,7 @@ export const Main = (props: PropsWithChildren<{
     }
 
     const getPhotoByName = async (name: string) => {
-        fetch(`http://85.209.148.98:3000/photos/${gender}/${name}`)
+        fetch(`${BASE_URL}/photos/${gender}/${name}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -127,7 +128,7 @@ export const Main = (props: PropsWithChildren<{
                 </View>
 
 
-                {allData[gender]?.length > 0 && currentPhotoIndex < allData[gender].length ? (
+                {allData[gender]?.length > 0 && currentPhotoIndex < allData[gender].length-1 ? (
                     <View style={[styles.center, styles.mainPicture]}>
                         {currentPhoto && <Image source={{uri: currentPhoto}}
                                                 style={{width: 250, height: 400, borderRadius: 20}}/>}
@@ -170,12 +171,12 @@ export const Main = (props: PropsWithChildren<{
                             <Text style={styles.emptyPageMessage}>Wait for matches!!!
                             </Text>
                         </View>
-                        {/*<View style={[styles.center]}>*/}
-                        {/*    <Button*/}
-                        {/*        onPress={onLogout}*/}
-                        {/*        title="logout"*/}
-                        {/*    />*/}
-                        {/*</View>*/}
+                        <View style={[styles.center]}>
+                            <Button
+                                onPress={onLogout}
+                                title="logout"
+                            />
+                        </View>
                     </View>
                 )}
             </ScrollView>

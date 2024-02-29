@@ -3,7 +3,6 @@ import {WebView} from 'react-native-webview';
 import {DeviceData} from "../../App.tsx";
 
 interface WebViewComponentProps {
-    deviceData: DeviceData;
     uri:string
 }
 export class WebViewComponent extends Component<WebViewComponentProps> {
