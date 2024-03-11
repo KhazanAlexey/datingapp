@@ -72,6 +72,7 @@ export const Registration = (props: PropsWithChildren<{
                 onPress={setSelectedIdHandler}
                 selectedId={selectedId}
                 layout='row'
+                labelStyle={{color:"black"}}
             />
             <TouchableOpacity onPress={onRegisterHandler} style={styles.registerBtn}>
                 <Text style={styles.loginText}>Register</Text>
@@ -104,6 +105,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     TextInput: {
+        color: "black",
         width: "100%",
         height: 50,
         flex: 1,

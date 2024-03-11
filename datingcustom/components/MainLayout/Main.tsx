@@ -1,6 +1,7 @@
 import React, {PropsWithChildren, useEffect, useRef, useState} from 'react';
 import {
-    Animated, Button,
+    Animated,
+    Button,
     Easing,
     Image,
     ImageBackground,
@@ -128,7 +129,7 @@ export const Main = (props: PropsWithChildren<{
                 </View>
 
 
-                {allData[gender]?.length > 0 && currentPhotoIndex < allData[gender].length-1 ? (
+                {allData[gender]?.length > 0 && currentPhotoIndex < allData[gender].length - 1 ? (
                     <View style={[styles.center, styles.mainPicture]}>
                         {currentPhoto && <Image source={{uri: currentPhoto}}
                                                 style={{width: 250, height: 400, borderRadius: 20}}/>}

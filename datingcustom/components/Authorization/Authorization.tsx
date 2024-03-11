@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     TextInput: {
+        color: "black",
         width: "100%",
         height: 50,
         flex: 1,
